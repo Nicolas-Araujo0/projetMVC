@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+{% block content %}
+	<form action="/users/addToDB" method='post' class='user'>
+		<label for="prenom">First name</label>
+		<input type="text" name="prenom" id="prenom" maxlength='50'>
+		<label for="nom">Last name</label>
+		<input type="text" name="nom" id="nom" maxlength='50'>
+		<label for="email">Email address</label>
+		<input type="email" name="email" id="email" maxlength='100'>
+		<span></span>
+		<label for="pass">Password</label>
+		<input type="text" name="pass" id="pass" maxlength='50'>
+		<span></span>
+		<label for="admin">Is admin</label>
+		<div>
+			<label for="adminY">Yes</label>
+			<input type="radio" name="admin" id="adminY" value='1'>
+			<label for="adminN">No</label>
+			<input type="radio" name="admin" id="adminN" value='0'>
+		</div>
+		<input type="submit" value="Add product">
+	</form>
+{% endblock %}

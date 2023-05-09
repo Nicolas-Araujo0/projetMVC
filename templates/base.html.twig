@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{{title}}</title>
+		<link rel="stylesheet" href="http://localhost:8000/style/reset.css">
+		<link rel="stylesheet" href="http://localhost:8000/style/style.css">
+		<script defer src="http://localhost:8000/script.js"></script>
+	</head>
+	<body>
+		<main>
+			<aside>
+				<div class="logoContainer"><img src="http://localhost:8000/assets/Logo.webp" alt="OFP-Logo"></div>
+				<nav>
+					<ul>
+						<li><a href="/users">Users</a></li>
+						<li><a href="/users/add">Add User</a></li>
+						<li><a href="/products">Products</a></li>
+						<li><a href="/products/add">Add product</a></li>
+						<li><a href="/restock">Restock</a></li>
+					</ul>
+				</nav>
+			</aside>
+			<section>
+				<header>
+					<div>
+						<img src="http://localhost:8000/assets/avatar.webp" alt="users-picture">
+						<span>{{name}}
+							est connecté.e</span>
+					</div>
+					<a href="/">
+						<button>Lougout</button>
+					</a>
+				</header>
+				<main>
+					<div class='head'>
+						<h1>{{title}}</h1>
+						{% block searchBar %}{% endblock %}
+					</div>
+					{% if result != "" %}
+						<div class='result'>
+							<p>
+								{% if result == 1 %}
+									{{title}}
+									as been added to database
+								{% elseif result == 0 %}
+									Error while adding product to database
+								{% endif %}
+								{% if result.id != "" %}
+									{% if result.name == result.oldContent %}
+										{{result.name}}
+										has been changed to
+										{{result.content}}
+									{% else %}
+										{{result.column}}
+										of
+										{{result.name}}
+										has been modified from
+										{{result.oldContent}}
+										to
+										{{result.content}}.
+									{% endif %}
+								{% elseif result == 2 %}
+									None
+									{{placeholder}}
+									in database contain the searched characters.
+								{% else %}
+									Error while trying to modify product in database
+								{% endif %}
+							</p>
+						</div>
+					{% endif %}
+					{% block content %}{% endblock %}
+
+				</main>
+
+			</section>
+		</body>
+	</body>
+</html>

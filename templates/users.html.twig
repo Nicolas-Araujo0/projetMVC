@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+{% block searchBar %}
+	<form action='/users' method='get'>
+		<label for="searchBar">Enter a
+			{{placeholder}}
+			name</label>
+		<input type="text" name="searchBar" id="searchBar" placeholder=' {{placeholder}}...'>
+		<input type="submit" value="Search">
+	</form>
+{% endblock %}
+{% block content %}
+	<table>
+		<thead>
+			<tr class='user'>
+				<th>Nom</th>
+				<th>Prenom</th>
+				<th>Email</th>
+				<th>Admin</th>
+				<th>Budget</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in user %}
+				<tr>
+
+					<td><input type="text" name="nom" id="nom" data-name="{{item.nom}}" data-id="{{ item.id }}" value='{{item.nom}}' maxlength="50" readonly></td>
+					<td><input type="text" name="prenom" id="prenom" data-id="{{ item.id }}" value='{{item.prenom}}' maxlength="70" readonly></td>
+					<td><input type="text" name="email" id="email" data-id="{{ item.id }}" value='{{item.email}}' maxlength="70" readonly></td>
+					<td><input type="text" name="admin" id="admin" data-id="{{ item.id }}" value='{% if item.admin == 1 %}Yes{% else %}No{% endif %}' maxlength='4' readonly></td>
+					<td><input type="text" name="budget" id="budget" data-id="{{ item.id }}" value='{{item.budget}}' maxlength='4' readonly></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

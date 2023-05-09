@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+{% block content %}
+	<form action="/products/addToDB" method='post'>
+		<label for="nom">Product name</label>
+		<input type="text" name="nom" id="nom" maxlength='50'>
+		<label for="prixSalarie">Employee Price</label>
+		<input type="text" name="prixSalarie" id="prixSalarie" maxlength='5'>
+        <span>Number must be superior to 0</span>
+		<label for="prixAchat">Buying price</label>
+		<input type="text" name="prixAchat" id="prixAchat" maxlength='5'>
+        <span>Number must be superior to 0</span>
+		<label for="stock">In stock</label>
+		<input type="text" name="stock" id="stock" maxlength='10'>
+        <span>Number must be superior to 0</span>
+        <input type="submit" value="Add product">
+	</form>
+{% endblock %}
