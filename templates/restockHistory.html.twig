@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+{% block content %}
+	<table>
+		<thead>
+			<tr class='fiveColumn'>
+				<th>Product name</th>
+				<th>User name</th>
+				<th>Quantity</th>
+				<th>Date (most recent)</th>
+				<th>Cost</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in history %}
+				<tr>
+					<td>{{item.pNom}}</td>
+					<td>{{item.nom}}
+						{{item.prenom}}</td>
+					<td style="color:green">+{{item.quantite}}</td>
+					<td>{{item.date}}</td>
+					<td>{{item.cout}}€</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

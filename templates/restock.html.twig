@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+{% block content %}
+	<form action="restock/buyProducts" method="post" class="restock">
+		<label for="prods">Choose a product to restock</label>
+		<select name="prods" id="prods">
+        <optgroup label="Alphabetical order">
+			{% for item in products %}
+				<option value="{{item.id}}" {% if item.stock <= 10 %}class='lowStock'{% endif %} data-price='{{item.prix_achat}}' {% if selectedID == item.id %}selected{% endif %} >{{item.nom}} ({{item.stock}} lefts)</option>
+			{% endfor %}
+        </optgroup>
+		</select>
+		<label for="quantity">Quantity</label>
+		<select name="quantity" id="quantity">
+        <option value="5" data-reduction='1'>5</option>
+        <option value="10" data-reduction='.95'>10</option>
+        <option value="20" data-reduction='.90'>20</option>
+        <option value="40" data-reduction='.85'>40</option>
+        <option value="100" data-reduction='.7'>100</option>
+        </select>
+		<span class="priceComponents"><i>Informations transactions</i></span>
+        <span class='price'><i>Amount to pay</i></span>
+        <input type="hidden" name="cost" id='cost'>
+        <input type="submit" value="Who pay ?">
+	</form>
+{% endblock %}

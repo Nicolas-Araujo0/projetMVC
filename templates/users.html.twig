@@ -11,7 +11,7 @@
 {% block content %}
 	<table>
 		<thead>
-			<tr class='user'>
+			<tr class='fiveColumn'>
 				<th>Nom</th>
 				<th>Prenom</th>
 				<th>Email</th>
@@ -22,12 +22,11 @@
 		<tbody>
 			{% for item in user %}
 				<tr>
-
-					<td><input type="text" name="nom" id="nom" data-name="{{item.nom}}" data-id="{{ item.id }}" value='{{item.nom}}' maxlength="50" readonly></td>
-					<td><input type="text" name="prenom" id="prenom" data-id="{{ item.id }}" value='{{item.prenom}}' maxlength="70" readonly></td>
-					<td><input type="text" name="email" id="email" data-id="{{ item.id }}" value='{{item.email}}' maxlength="70" readonly></td>
-					<td><input type="text" name="admin" id="admin" data-id="{{ item.id }}" value='{% if item.admin == 1 %}Yes{% else %}No{% endif %}' maxlength='4' readonly></td>
-					<td><input type="text" name="budget" id="budget" data-id="{{ item.id }}" value='{{item.budget}}' maxlength='4' readonly></td>
+					<td><input type="text" pattern="/^[a-zA-Z]{4,}$/u" name="nom" class="nom" data-name="{{item.nom}}" data-id="{{ item.id }}" value='{{item.nom}}' maxlength="50" readonly></td>
+					<td><input type="text" pattern="/^[a-zA-Z]{4,}$/u" name="prenom" class="prenom" data-id="{{ item.id }}" value='{{item.prenom}}' maxlength="70" readonly></td>
+					<td><input type="text" pattern="/^[A-Z]{1}\w{5,}@{1}\w{3,}.\w{2,4}$/u" name="email" class="email" data-id="{{ item.id }}" value='{{item.email}}' maxlength="70" readonly></td>
+					<td><input type="text" pattern="/^(yes|no|1|0)$/u" name="admin" class="admin" data-id="{{ item.id }}" value='{% if item.admin == 1 %}Yes{% else %}No{% endif %}' maxlength='4' readonly></td>
+					<td><input type="text" pattern="/^\d+$/u" name="budget" class="budget" data-id="{{ item.id }}" value='{{item.budget}}' maxlength='4' readonly></td>
 				</tr>
 			{% endfor %}
 		</tbody>

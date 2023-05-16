@@ -20,13 +20,16 @@
 						<li><a href="/products">Products</a></li>
 						<li><a href="/products/add">Add product</a></li>
 						<li><a href="/restock">Restock</a></li>
+						<li><a href="/restock/history">Restock history</a></li>
+						<li><a href="/logs">Change history</a></li>
+						<li><a href="/commande">Commande</a></li>
 					</ul>
 				</nav>
 			</aside>
 			<section>
 				<header>
 					<div>
-						<img src="http://localhost:8000/assets/avatar.webp" alt="users-picture">
+						<img src="http://localhost:8000/assets/avataaars.png" alt="users-picture">
 						<span>{{name}}
 							est connecté.e</span>
 					</div>
@@ -47,8 +50,20 @@
 									as been added to database
 								{% elseif result == 0 %}
 									Error while adding product to database
-								{% endif %}
-								{% if result.id != "" %}
+								{% elseif result.nonvalide != "" %}
+									Entered values are incorrect.
+									{% if result.nonvalide == "nom" %}
+									 Must contain atleast 4 letters.
+										{% elseif result.nonvalide == "email" %}
+									 Must follow the format Xxxxxx@xxx.xx.
+										{% elseif result.nonvalide == "admin" %}
+									 Must be 1, 0, yes or no.
+										{% elseif result.nonvalide == "budget" %}
+									 Must be a number between 0 and 100
+									 {% elseif result.nonvalide == "number" %}
+										Must be a number between 0 and 20
+									{% endif %}
+								{% elseif result.id != "" %}
 									{% if result.name == result.oldContent %}
 										{{result.name}}
 										has been changed to
@@ -60,12 +75,22 @@
 										has been modified from
 										{{result.oldContent}}
 										to
-										{{result.content}}.
+										{% if result.content == "no"  %}
+											No
+										{% elseif result.content == "yes"  %}
+											Yes
+										{% else %}
+											{{result.content}}
+										{% endif %}
+										.
 									{% endif %}
 								{% elseif result == 2 %}
 									None
 									{{placeholder}}
 									in database contain the searched characters.
+								{% elseif result.success == true %}
+									{{result["quantity"]}}
+									units have been added to the stock.
 								{% else %}
 									Error while trying to modify product in database
 								{% endif %}

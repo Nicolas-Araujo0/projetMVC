@@ -3,7 +3,6 @@ namespace src\controllers;
 
 use core\BaseController;
 
-session_start();
 class HomeController extends BaseController{
     public function index(){
         unset($_SESSION["username"]);

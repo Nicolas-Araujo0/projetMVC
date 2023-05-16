@@ -26,7 +26,7 @@ abstract class BaseModel
         }
     }
     public function getOne(){
-        $sql = "SELECT * FROM ". $this->table . "WHERE id =". $this->id;
+        $sql = "SELECT * FROM  $this->table WHERE id =  $this->id";
         $sth = $this->_connexion->prepare($sql);
         $sth->execute();
         return $sth->fetch();

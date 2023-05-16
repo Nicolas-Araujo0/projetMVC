@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+{% block content %}
+	<div class="commande">
+		{% for employe in employes %}
+			<div>
+				<header>
+					<img src="http://localhost:8000/assets/avataaars.png" alt="">
+
+				</header>
+				<main>
+					<span>{{employe.nom}}</span>
+					<span>{{employe.prenom}}</span>
+					<p>Favorite snacks :
+						{{employe.Favorite_Food}}
+						(bought
+						{{employe.quantity_eaten}}
+						times)</p>
+				</main>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html.twig" %}
+{% block content %}
+	<table>
+		<thead>
+			<tr class='fiveColumn'>
+				<th>User name</th>
+				<th>Product name</th>
+				<th>Modification</th>
+				<th>Date (most recent)</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in history %}
+				<tr>
+					<td>{{item.nom}}
+						{{item.prenom}}</td>
+					<td>{{item.pNom}}</td>
+					<td>{{item.quantite}}</td>
+					<td>{{item.date}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

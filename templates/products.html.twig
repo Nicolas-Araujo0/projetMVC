@@ -11,7 +11,7 @@
 {% block content %}
 	<table>
 		<thead>
-			<tr class='product'>
+			<tr class='fourColumn'>
 				<th>Nom</th>
 				<th>prix salarié</th>
 				<th>prix achat</th>
@@ -20,11 +20,11 @@
 		</thead>
 		<tbody>
 			{% for item in products %}
-				<tr>
-					<td><input type="text" name="nom" id="nom" data-name="{{item.nom}}" data-id="{{ item.id }}" value='{{item.nom}}' maxlength="50" readonly></td>
-					<td><input type="text" name="prix_salarie" id="prix_salarie" data-id="{{ item.id }}" value='{{item.prix_salarie}}' maxlength="4" readonly></td>
-					<td><input type="text" name="prix_achat" id="prix_achat" data-id="{{ item.id }}" value='{{item.prix_achat}}' maxlength="4" readonly></td>
-					<td><input type="text" name="stock" id="stock" data-id="{{ item.id }}" value='{{item.stock}}' maxlength='4' readonly></td>
+				<tr {% if item.stock <= 10 %}class='lowStock'{% endif %}>
+					<td><input type="text" pattern="/^[a-zA-Z]{4,}$/u" name="nom" class="nom" data-name="{{item.nom}}" data-id="{{ item.id }}" value='{{item.nom}}' maxlength="50" readonly></td>
+					<td><input type="text" pattern="/^\d+$/u" name="prix_salarie" class="prix_salarie" data-id="{{ item.id }}" value='{{item.prix_salarie}}' maxlength="4" readonly></td>
+					<td><input type="text" pattern="/^\d+$/u" name="prix_achat" class="prix_achat" data-id="{{ item.id }}" value='{{item.prix_achat}}' maxlength="4" readonly></td>
+					<td><input type="text" pattern="/^\d+$/u" name="stock" class="stock" data-id="{{ item.id }}" value='{{item.stock}}' maxlength='4' readonly></td>
 				</tr>
 			{% endfor %}
 		</tbody>

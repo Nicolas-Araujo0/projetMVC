@@ -1,0 +1,31 @@
+{% extends "base.html.twig" %}
+{% block content %}
+	<table>
+		<thead>
+			<tr class='fourColumn'>
+				<th>Product</th>
+				<th>Colonne</th>
+				<th>Change</th>
+				<th>Date (most recent)</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for log in logs %}
+				<tr>
+					<td>
+						{% if log.nom != NULL %}
+							{{log.nom}}
+							{% else %}
+							{{log.pNom}}
+						{% endif %}
+					</td>
+					<td>{{log.colonne}}</td>
+					<td>{{log.content}}</td>
+					<td>{{log.date}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+
+{% endblock %}

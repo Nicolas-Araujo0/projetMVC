@@ -60,6 +60,10 @@ body {
   overflow: hidden;
   font-family: Arial, Helvetica, sans-serif;
 }
+body.connexion {
+  background: rgb(255, 152, 97);
+  background: radial-gradient(circle, rgba(255, 152, 97, 0.4) 0%, rgb(255, 255, 255) 100%);
+}
 body > main {
   display: flex;
   width: 100%;
@@ -98,31 +102,34 @@ body > main aside nav li:hover {
   background-color: white;
   border-left: 4px solid rgb(223, 109, 56);
 }
+body > main .lowStock {
+  background-color: lightcoral;
+}
 body > main section {
   display: flex;
   flex-direction: column;
   width: 85%;
 }
-body > main section header {
+body > main section > header {
   display: flex;
   justify-content: space-between;
   background-color: bisque;
   height: 10%;
   box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.1);
 }
-body > main section header div {
+body > main section > header div {
   display: flex;
   margin-left: 2em;
   align-items: center;
 }
-body > main section header div img {
+body > main section > header div img {
   height: 80%;
   margin-right: 10px;
 }
-body > main section header a {
+body > main section > header a {
   align-self: center;
 }
-body > main section header a button {
+body > main section > header a button {
   width: 110px;
   height: 40px;
   border-radius: 15px;
@@ -133,10 +140,14 @@ body > main section header a button {
   font-weight: 600;
   box-shadow: 1px 1px 1px;
 }
-body > main section header a button:hover {
+body > main section > header a button:hover {
   cursor: pointer;
   background-color: rgb(150, 0, 0);
   color: whitesmoke;
+}
+body > main section > main {
+  height: 100%;
+  overflow-y: scroll;
 }
 body > main section > main .head {
   display: flex;
@@ -162,6 +173,36 @@ body > main section > main .head form input {
 body > main section > main .head form input[type=submit] {
   cursor: pointer;
 }
+body > main section > main .commande {
+  display: flex;
+  flex-flow: wrap;
+  justify-content: space-between;
+  width: 90%;
+  margin: 3% auto 0;
+  row-gap: 30px;
+}
+body > main section > main .commande div {
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+  height: 240px;
+  background-color: rgb(255, 255, 255);
+  padding: 15px;
+  box-shadow: 1px 1px 3px 0;
+  border-radius: 10px;
+  text-align: center;
+  box-sizing: border-box;
+}
+body > main section > main .commande div span {
+  display: inline-block;
+  font-weight: 600;
+}
+body > main section > main .commande div p, body > main section > main .commande div span {
+  margin-top: 3px;
+}
+body > main section > main .commande div header img {
+  width: 125px;
+}
 body > main section > main .result {
   width: 80%;
   padding: 20px;
@@ -179,15 +220,19 @@ body > main section > main table th {
   font-weight: 600;
   font-size: 22px;
 }
-body > main section > main table .user th {
+body > main section > main table .fiveColumn th {
   width: 20%;
 }
-body > main section > main table .product th {
+body > main section > main table .fourColumn th {
   width: 25%;
 }
 body > main section > main table th,
 body > main section > main table td {
   padding: 5px 0;
+}
+body > main section > main table th input,
+body > main section > main table td input {
+  background-color: transparent;
 }
 body > main section > main table th:not(:last-child),
 body > main section > main table td:not(:last-child) {
@@ -231,6 +276,21 @@ body > main section > main > form label {
 body > main section > main > form input:first-of-type,
 body > main section > main > form span {
   margin-bottom: 15px;
+}
+body > main section > main > form.restock {
+  row-gap: 8px;
+}
+body > main section > main > form.restock select {
+  height: 25px;
+  border-radius: 2px;
+}
+body > main section > main > form.restock span {
+  margin: 0;
+}
+body > main section > main > form.restock select,
+body > main section > main > form.restock span {
+  margin-bottom: 15px;
+  font-size: 15px;
 }
 body > main section > main > form.user input:nth-of-type(2) {
   margin-bottom: 15px;

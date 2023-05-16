@@ -5,8 +5,6 @@ namespace src\controllers;
 use core\BaseController;
 use src\models\User;
 
-session_start();
-
 class UserController extends BaseController
 {
     private $model;
@@ -37,10 +35,15 @@ class UserController extends BaseController
             if (trim($_POST["email"]) != "" && trim($_POST["pass"]) != "") {
                 $pass = $_POST["pass"];
                 $response = $this->model->connexion($_POST);
-                if($response){
-                    password_verify($pass, $response->pass);
-                    $_SESSION["username"] = $response->nom . " ". $response->prenom;
-                    header("location:/users");
+                if ($response) {
+                    if (password_verify($pass, $response->pass)) {
+                        $_SESSION["username"] = $response->nom . " " . $response->prenom;
+                        $_SESSION["userId"] = $response->id;
+                        echo "<script> window.location.replace('/users') </script>";
+                    } else {
+                        header("location:../");
+                        $_SESSION["notification"] = "error";
+                    }
                 } else {
                     header("location:../");
                     $_SESSION["notification"] = "error";
@@ -48,7 +51,8 @@ class UserController extends BaseController
             };
         };
     }
-    public function lougout(){
+    public function lougout()
+    {
         session_destroy();
         header("http://localhost:8000");
     }
@@ -80,7 +84,7 @@ class UserController extends BaseController
 
         $json = file_get_contents('php://input');
         $data = json_decode($json);
-
+        $this->model->logs($data);
         $res = $this->model->modify($data);
         echo $res;
     }
@@ -92,17 +96,25 @@ class UserController extends BaseController
                 $result = $_SESSION["result"];
                 $_SESSION["result"] = "";
             }
-            $title = "Products";
+            $title = "Users";
             $name = $_SESSION["username"];
-            $placeholder = "product";
+            $placeholder = "user";
             $products = $this->model->search($_GET);
             if ($products == []) {
                 $result = 2;
             }
 
-            $this->render("users.html.twig", array("title" => $title, "products" => $products, "name" => $name, "placeholder" => $placeholder, "result" => $result));
+            $this->render("users.html.twig", array("title" => $title, "user" => $products, "name" => $name, "placeholder" => $placeholder, "result" => $result));
         } else {
-            header("location:http://localhost:8000/products");
+            header("location:http://localhost:8000/users");
         }
+    }
+    public function showStats(){
+        $title = "Stats";
+        $name = $_SESSION["username"];
+        $employes = $this->model->getCommande();
+        // $stats = $this->model->getStats();
+        // $stats = $this->model->countStat("produit_id","sold");
+        $this->render("commande.html.twig", array("title" => $title, "name" => $name, "employes" => $employes));
     }
 }
