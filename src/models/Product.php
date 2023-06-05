@@ -17,12 +17,13 @@ class Product extends BaseModel
     public function insert($data)
     {
         if (preg_match("/^[a-zA-Z]{4,}$/u", $data["nom"]) &&  preg_match("/^\d+$/u", $data["prixAchat"]) && preg_match("/^\d+$/u", $data["prixSalarie"]) && preg_match("/^\d+$/u", $data["stock"])) {
-            $sql = "INSERT INTO products(nom, prix_salarie, prix_achat, stock) VALUES (:nom, :priceS, :priceA, :stock)";
+            $sql = "INSERT INTO products(nom, prix_salarie, prix_achat, stock,type) VALUES (:nom, :priceS, :priceA, :stock,:type)";
             $sth = $this->_connexion->prepare($sql);
             $sth->bindparam(":nom", $data["nom"]);
             $sth->bindparam(":priceS", $data["prixSalarie"]);
             $sth->bindparam(":priceA", $data["prixAchat"]);
             $sth->bindparam(":stock", $data["stock"]);
+            $sth->bindParam(":type", $data["type"]);
             $sth->execute();
             return ($sth->rowcount() > 0);
         } else {
@@ -41,13 +42,13 @@ class Product extends BaseModel
             if (preg_match("/^\"[a-zA-Z]{4,}\"$/u", $newContent)) {
                 $update = true;
             } else {
-                $_SESSION["result"] = ["nonvalide"=> "nom"];
+                $_SESSION["result"] = ["nonvalide" => "nom"];
             }
         } else if ($column == "prix_achat" || $column == "prix_salarie") {
-            if (preg_match("/^\"\d+\"$/u", $newContent)) {
+            if (preg_match("/^\"(-?(\d*(.\d{2})?)|(.\d{2})?)\"$/u", $newContent)) {
                 $update = true;
             } else {
-                $_SESSION["result"] = ["nonvalide"=> "number"];
+                $_SESSION["result"] = ["nonvalide" => "number"];
             }
         } else {
             $update = false;
@@ -132,5 +133,32 @@ class Product extends BaseModel
         $sth->bindparam(":minus", $minus);
         $sth->execute();
         return $sth->rowcount() > 0;
+    }
+    public function payArticle($data, $userId)
+    {
+        $price = $data["prix_salarie"];
+        $userId = $userId;
+        $sql = "UPDATE users SET budget = budget - :price WHERE id = :userId";
+        $sth = $this->_connexion->prepare($sql);
+        $sth->bindParam(":price", $price);
+        $sth->bindParam(":userId", $userId);
+        $sth->execute();
+        return $sth->rowcount() > 0;
+    }
+
+    public function getAllwithFavs($data)
+    {
+        $userId = $data["userId"];
+        $sql = "SELECT nom, (CASE WHEN favoris.user_id IS NOT NULL THEN true ELSE false END) AS fav, stock, prix_salarie,products.id, products.type, products.image FROM `products` LEFT JOIN favoris ON favoris.product_id = products.id AND favoris.user_id = :userId";
+        $sth = $this->_connexion->prepare($sql);
+        $sth->bindParam(":userId", $userId);
+        $sth->execute();
+        return $sth->fetchAll(PDO::FETCH_OBJ);
+    }
+    public function getAllType(){
+        $sql = "SELECT type FROM products GROUP BY type";
+        $sth = $this->_connexion->prepare($sql);
+        $sth->execute();
+        return $sth->fetchAll(PDO::FETCH_OBJ);
     }
 }

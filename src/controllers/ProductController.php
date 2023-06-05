@@ -41,7 +41,7 @@ class ProductController extends BaseController
             $priceS = $_POST["prixSalarie"];
             $priceA = $_POST["prixAchat"];
             $stock = $_POST["stock"];
-
+            $type = $_POST["type"];
             if (((trim($nom)) != "") && (trim($priceA) != "") && (trim($priceS) != "") && (trim($stock) != "")) {
                 $_SESSION["result"] = $this->model->insert($_POST);
             }
@@ -121,7 +121,19 @@ class ProductController extends BaseController
         header('Content-Type: application/json');
         header("Access-Control-Allow-Origin: *");
         $this->model->table = "products";
-        $result = $this->model->getAll();
+        if (isset($_GET["userId"])) {
+            $result = $this->model->getAllwithFavs($_GET);
+        }
+        if (!empty($result)) {
+            echo json_encode($result);
+        }
+    }
+    public function displayTypeJSON()
+    {
+        header('Content-Type: application/json');
+        header("Access-Control-Allow-Origin: *");
+        $this->model->table = "products";
+        $result = $this->model->getAllType();
         if (!empty($result)) {
             echo json_encode($result);
         }
@@ -130,17 +142,21 @@ class ProductController extends BaseController
     {
         header('Content-Type: application/json');
         header("Access-Control-Allow-Origin: *");
-        if (!empty(trim($_GET["id"])) && is_numeric($_GET["id"])) {
-
+        if (!empty(trim($_GET["id"])) && is_numeric($_GET["id"]) && is_numeric($_GET["userId"])) {
             $resultat = $this->model->consume($_GET["id"]);
             if ($resultat) {
                 $this->model->id = $_GET["id"];
                 $result = $this->model->getOne();
                 if (!empty($result)) {
-                    echo json_encode($result);
+                    $result = $this->model->payArticle($result, $_GET["userId"]);
+                    if ($result) {
+                        echo '{ "result": "success" }';
+                    } else {
+                        echo '{ "result": "failed payment" }';
+                    }
                 }
             } else {
-                echo "erreur de la demande";
+                echo '{ "result": "error" }';
             }
         }
     }

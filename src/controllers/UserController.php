@@ -31,6 +31,7 @@ class UserController extends BaseController
 
     public function login()
     {
+
         if (isset($_POST["email"], $_POST["pass"])) {
             if (trim($_POST["email"]) != "" && trim($_POST["pass"]) != "") {
                 $pass = $_POST["pass"];
@@ -51,6 +52,33 @@ class UserController extends BaseController
             };
         };
     }
+
+    public function userLogin()
+    {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Content-Type");
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+
+        if (isset($data->email, $data->pass)) {
+            if (trim($data->email) != "" && trim($data->pass) != "") {
+                $pass = $data->pass;
+                $response = $this->model->userConnexion($data);
+                if (!empty($response)) {
+                    if (password_verify($pass, $response->pass)) {
+                        echo json_encode($response);
+                    } else {
+                        echo json_encode("passwordError");
+                    }
+                } else {
+                    echo json_encode("indentifiantError");
+                }
+            };
+        };
+    }
+
+
     public function lougout()
     {
         session_destroy();
@@ -113,8 +141,6 @@ class UserController extends BaseController
         $title = "Stats";
         $name = $_SESSION["username"];
         $employes = $this->model->getCommande();
-        // $stats = $this->model->getStats();
-        // $stats = $this->model->countStat("produit_id","sold");
         $this->render("commande.html.twig", array("title" => $title, "name" => $name, "employes" => $employes));
     }
 }

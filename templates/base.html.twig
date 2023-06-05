@@ -75,9 +75,9 @@
 										has been modified from
 										{{result.oldContent}}
 										to
-										{% if result.content == "no"  %}
+										{% if result.content == 0 %}
 											No
-										{% elseif result.content == "yes"  %}
+										{% elseif result.content == 1 %}
 											Yes
 										{% else %}
 											{{result.content}}

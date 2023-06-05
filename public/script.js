@@ -48,7 +48,7 @@ document.querySelectorAll("td").forEach(item => {
                         },
                         body: JSON.stringify(data)
                     });
-                    await rawResponse.json().then(location.reload());
+                    await rawResponse.json().then(window.location.reload());
                     
                 });
                 clicked = true;

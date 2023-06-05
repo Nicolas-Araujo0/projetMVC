@@ -29,10 +29,10 @@ abstract class BaseModel
         $sql = "SELECT * FROM  $this->table WHERE id =  $this->id";
         $sth = $this->_connexion->prepare($sql);
         $sth->execute();
-        return $sth->fetch();
+        return $sth->fetch(PDO::FETCH_ASSOC);
     }
     public function getAll(){
-        $sql = "SELECT * FROM " . $this->table;
+        $sql = "SELECT * FROM  . $this->table";
         $sth = $this->_connexion->prepare($sql);
         $sth->execute();
         return $sth->fetchAll();

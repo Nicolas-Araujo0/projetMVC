@@ -54,16 +54,16 @@ class User extends BaseModel
         } else if ($column == "admin") {
             if (preg_match("/^\"(yes|no|1|0)\"$/u", $newContent)) {
                 $update = true;
-                if($newContent == '"1"'){
-                    $newContent = "no";
-                } else if ($newContent == '"2'){
-                    $newContent = "yes";
+                if($newContent == '"no"'){
+                    $newContent = 2;
+                } else if ($newContent == '"yes"'){
+                    $newContent = 1;
                 }
             } else {
                  $_SESSION["result"] = ["nonvalide"=> "admin"];
             }
         } else if ($column == "budget") {
-            if (preg_match("/^\"\d{0,3}\"$/u", $newContent)) {
+            if (preg_match("/^\"(-?(\d*(.\d{2})?)|(.\d{2})?)\"$/u", $newContent)) {
                 $update = true;
             } else {
                  $_SESSION["result"] = ["nonvalide"=> "budget"];
@@ -113,6 +113,15 @@ class User extends BaseModel
     {
         $email = $data["email"];
         $sql = "SELECT * FROM users WHERE email = :email AND admin = 1";
+        $sth = $this->_connexion->prepare($sql);
+        $sth->bindparam(":email", $email);
+        $sth->execute();
+        return $sth->fetch(PDO::FETCH_OBJ);
+    }
+    public function userConnexion($data)
+    {
+        $email = $data->email;
+        $sql = "SELECT * FROM users WHERE email = :email";
         $sth = $this->_connexion->prepare($sql);
         $sth->bindparam(":email", $email);
         $sth->execute();

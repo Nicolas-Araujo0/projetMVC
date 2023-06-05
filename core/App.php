@@ -12,7 +12,7 @@ session_start();
 class App
 {
     public function run()
-    {
+    {   
         $uri = strtok($_SERVER["REQUEST_URI"], "?");
         if ($uri == "/" || $uri == "/index") {
             $controller = new HomeController();
@@ -20,6 +20,9 @@ class App
         } else if ($uri == "/login") {
             $controller = new UserController();
             $controller->login();
+        } else if ($uri == "/api/user/login") {
+            $controller = new UserController();
+            $controller->userLogin();
         } elseif (isset($_SESSION["username"])) {
 
             // ------------------------------------------------------- PRODUCTS
@@ -84,10 +87,27 @@ class App
         } else if ($uri == "/api/products") {
             $controller = new ProductController();
             $controller->displayJSON();
-        } else if ($uri == "/api/products/consume" && isset($_GET["id"])) {
+        } else if ($uri == "/api/products/type") {
+            $controller = new ProductController();
+            $controller->displayTypeJSON();
+        } else if ($uri == "/api/products/consume" && isset($_GET["id"],$_GET["userId"])) {
             $controller = new ProductController();
             $controller->consumeProducts();
-        } else {
+            $controller = new OtherController();
+            $controller->addHistory();
+        } else if ($uri == "/api/historique" && isset($_GET["id"])) {
+            $controller = new OtherController();
+            $controller->userlogsJSON();
+        } else if ($uri == "/api/favoris" && isset($_GET["id"])) {
+            $controller = new OtherController();
+            $controller->favorisJSON();
+        } else if ($uri == "/api/favoris/add") {
+            $controller = new OtherController();
+            $controller->addFavoris();
+        } else if ($uri == "/api/favoris/remove") {
+            $controller = new OtherController();
+            $controller->removeFavoris();
+        }  else {
             header('location: /');
         }
     }

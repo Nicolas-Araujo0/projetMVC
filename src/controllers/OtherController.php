@@ -14,12 +14,69 @@ class OtherController extends BaseController
         parent::__construct();
         $this->model = new Other;
     }
-    public function getLogs(){
+    public function getLogs()
+    {
         $response = $this->model->getLogs();
-        if (!empty($response)){
+        if (!empty($response)) {
             $title = "Logs";
             $name = $_SESSION["username"];
             $this->render("logs.html.twig", array("title" => $title, "name" => $name, "logs" => $response));
         }
+    }
+    public function userlogsJSON()
+    {
+        header('Content-Type: application/json');
+        header("Access-Control-Allow-Origin: *");
+        if (isset($_GET["id"])) {
+            $result = $this->model->userLogs($_GET["id"]);
+            if (!empty($result)) {
+
+                echo json_encode($result);
+            }
+        }
+    }
+    public function addHistory()
+    {
+        header('Content-Type: application/json');
+        header("Access-Control-Allow-Origin: *");
+        if (isset($_GET["id"], $_GET["userId"])) {
+            $this->model->setSold($_GET);
+        }
+    }
+    public function favorisJSON()
+    {
+        header('Content-Type: application/json');
+        header("Access-Control-Allow-Origin: *");
+        if (isset($_GET["id"])) {
+            $result = $this->model->getFavoris($_GET);
+            if (!empty($result)) {
+                echo json_encode($result);
+            } else {
+                echo json_encode("noFavs");
+            }
+        }
+    }
+    public function addFavoris()
+    {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Content-Type");
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+
+        $this->model->addFavoris($data);
+        $result = $this->model->getFavoris($data);
+        echo $result ? json_encode($result) : json_encode("error");
+    }
+    public function removeFavoris()
+    {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Content-Type");
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+        $this->model->removeFavoris($data);
+        $result = $this->model->getFavoris($data);
+        echo $result ? json_encode($result) : json_encode("error");
     }
 }
