@@ -95,6 +95,9 @@ class App
             $controller->consumeProducts();
             $controller = new OtherController();
             $controller->addHistory();
+        } else if ($uri == "/api/products/cart") {
+            $controller = new OtherController();
+            $controller->payCart();
         } else if ($uri == "/api/historique" && isset($_GET["id"])) {
             $controller = new OtherController();
             $controller->userlogsJSON();

@@ -79,4 +79,27 @@ class OtherController extends BaseController
         $result = $this->model->getFavoris($data);
         echo $result ? json_encode($result) : json_encode("error");
     }
+    public function payCart()
+    {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Content-Type");
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+        if (isset($data->userId, $data->id)) {
+            $resultat = $this->model->totalPrice($data);
+            if ($resultat) {
+                $result = $this->model->payAll($data);
+                if ($result) {
+                    echo json_encode("success");
+                } else {
+                    echo json_encode("error");
+                }
+            } else {
+                echo json_encode("error");
+            }
+        } else {
+            echo json_encode("error");
+        }
+    }
 }

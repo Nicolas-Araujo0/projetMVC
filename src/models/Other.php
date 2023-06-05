@@ -43,7 +43,7 @@ class Other extends BaseModel
     }
     public function getFavoris($data)
     {
-        if(gettype($data) == "array"){
+        if (gettype($data) == "array") {
             $id = $data["id"];
         } else {
             $id = $data->id;
@@ -76,4 +76,62 @@ class Other extends BaseModel
         $sth->execute();
         // return $sth->rowCount() > 0;
     }
+    private $sqlRequest;
+    public function totalPrice($data)
+    {
+        $userId = $data->userId;
+
+        for ($a = 0; $a < $data->id; $a++) {
+            if ($a > 0) {
+                $this->sqlRequest += " OR id = :id" + $a + "";
+            } else {
+                $this->sqlRequest = " id = :id" + $a + "";
+            }
+        }
+        $sql = "UPDATE products SET stock = IF ( (SELECT users.budget FROM users WHERE users.id = :userId ) > ( SELECT SUM(prix_salarie) FROM products WHERE " + $this->sqlRequest + "), stock-1 , stock ) WHERE ( id = :userId)";
+        $sth = $this->_connexion->prepare($sql);
+        for ($i = 0; $i < $data->id; $i++) {
+            $text = ":id" + $i + "";
+            $id = $data->id[$i];
+            $sth->bindParam($text, $id);
+        }
+        $sth->bindParam(":userId", $userId);
+        $sth->execute();
+        return $sth->rowCount() > 0;
+    }
+    public function payAll($data)
+    {
+        $userId = $data->userId;
+
+        for ($a = 0; $a < $data->id; $a++) {
+            if ($a > 0) {
+                $this->sqlRequest += " OR id = :id" + $a + "";
+            } else {
+                $this->sqlRequest = " id = :id" + $a + "";
+            }
+        }
+        $sql = "UPDATE users SET budget = budget - ( SELECT SUM(prix_salarie) FROM products WHERE" + $this->sqlRequest + ") WHERE id = :userId";
+        $sth = $this->_connexion->prepare($sql);
+        for ($i = 0; $i < $data->id; $i++) {
+            $text = ":id" + $i + "";
+            $id = $data->id[$i];
+            $sth->bindParam($text, $id);
+        }
+        $sth->bindParam(":userId", $userId);
+        $sth->execute();
+        return $sth->rowCount() > 0;
+    }
 }
+/* 
+METTRE A JOUR LE STOCK DES PRODUITS SI LE BUDGET UTILISATEUR EST SUFFISANT
+
+UPDATE products SET stock = IF ( (SELECT users.budget FROM users WHERE users.id = 1 ) > ( SELECT SUM(prix_salarie) FROM products WHERE id = 1 ), stock-1 , stock )
+WHERE ( id = 1);
+
+
+
+
+METTRE A JOUR LE BUDGET UTILISATEUR EN PRELEVANT LE COUT DU PANIER 
+
+UPDATE users SET budget = budget - ( SELECT SUM(prix_salarie) FROM products WHERE id = 1 OR id = 3) WHERE id = 1
+*/

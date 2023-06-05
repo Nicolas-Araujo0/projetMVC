@@ -155,10 +155,12 @@ class Product extends BaseModel
         $sth->execute();
         return $sth->fetchAll(PDO::FETCH_OBJ);
     }
-    public function getAllType(){
+    public function getAllType()
+    {
         $sql = "SELECT type FROM products GROUP BY type";
         $sth = $this->_connexion->prepare($sql);
         $sth->execute();
         return $sth->fetchAll(PDO::FETCH_OBJ);
     }
+
 }
