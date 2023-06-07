@@ -30,10 +30,15 @@ class Other extends BaseModel
         $sth->execute();
         return $sth->fetchAll(PDO::FETCH_OBJ);
     }
-    public function setSold($data)
+    public function setSold($data,$userId)
     {
-        $productId = $data["id"];
-        $userId = $data["userId"];
+        if (gettype($data) == "array") {
+            $productId = $data["id"];
+            $userId = $data["userId"];
+        } else {
+            $productId = $data->id;
+            $userId = $userId;
+        }
         $sql = "INSERT INTO sold (produit_id,user_id) VALUES (:pId,:userId)";
         $sth = $this->_connexion->prepare($sql);
         $sth->bindParam(":pId", $productId);
@@ -80,20 +85,19 @@ class Other extends BaseModel
     public function totalPrice($data)
     {
         $userId = $data->userId;
-
-        for ($a = 0; $a < $data->id; $a++) {
+        for ($a = 0; $a < count($data->content); $a++) {
             if ($a > 0) {
-                $this->sqlRequest += " OR id = :id" + $a + "";
+                $this->sqlRequest = $this->sqlRequest . " OR id = :id" . $a;
             } else {
-                $this->sqlRequest = " id = :id" + $a + "";
+                $this->sqlRequest = " id = :id" . $a;
             }
         }
-        $sql = "UPDATE products SET stock = IF ( (SELECT users.budget FROM users WHERE users.id = :userId ) > ( SELECT SUM(prix_salarie) FROM products WHERE " + $this->sqlRequest + "), stock-1 , stock ) WHERE ( id = :userId)";
+        $sql = "UPDATE products SET stock = IF ( (SELECT users.budget FROM users WHERE users.id = :userId ) > ( SELECT SUM(prix_salarie) WHERE  $this->sqlRequest ), stock-1 , stock ) WHERE ( $this->sqlRequest )";
         $sth = $this->_connexion->prepare($sql);
-        for ($i = 0; $i < $data->id; $i++) {
-            $text = ":id" + $i + "";
-            $id = $data->id[$i];
-            $sth->bindParam($text, $id);
+        for ($i = 0; $i < count($data->content); $i++) {
+            $text = ":id" . $i;
+            $id = $data->content[$i]->id;
+            $sth->bindValue($text, $id);
         }
         $sth->bindParam(":userId", $userId);
         $sth->execute();
@@ -103,23 +107,34 @@ class Other extends BaseModel
     {
         $userId = $data->userId;
 
-        for ($a = 0; $a < $data->id; $a++) {
+        for ($a = 0; $a < count($data->content); $a++) {
             if ($a > 0) {
-                $this->sqlRequest += " OR id = :id" + $a + "";
+                $this->sqlRequest = $this->sqlRequest . " OR id = :id" . $a;
             } else {
-                $this->sqlRequest = " id = :id" + $a + "";
+                $this->sqlRequest = " id = :id" . $a;
             }
         }
-        $sql = "UPDATE users SET budget = budget - ( SELECT SUM(prix_salarie) FROM products WHERE" + $this->sqlRequest + ") WHERE id = :userId";
+        $sql = "UPDATE users SET budget = budget - ( SELECT SUM(prix_salarie) FROM products WHERE $this->sqlRequest ) WHERE id = :userId";
         $sth = $this->_connexion->prepare($sql);
-        for ($i = 0; $i < $data->id; $i++) {
-            $text = ":id" + $i + "";
-            $id = $data->id[$i];
-            $sth->bindParam($text, $id);
+        for ($i = 0; $i < count($data->content); $i++) {
+            $text = ":id" . $i;
+            $id = $data->content[$i]->id;
+            $sth->bindValue($text, $id);
         }
         $sth->bindParam(":userId", $userId);
         $sth->execute();
         return $sth->rowCount() > 0;
+    }
+
+    public function getSolde($data)
+    {
+        $userId = $data->userId;
+
+        $sql = "SELECT budget FROM users WHERE id = :userId";
+        $sth = $this->_connexion->prepare($sql);
+        $sth->bindParam("userId", $userId);
+        $sth->execute();
+        return $sth->fetch(PDO::FETCH_OBJ);
     }
 }
 /* 

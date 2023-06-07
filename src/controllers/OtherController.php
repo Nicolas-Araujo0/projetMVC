@@ -30,7 +30,6 @@ class OtherController extends BaseController
         if (isset($_GET["id"])) {
             $result = $this->model->userLogs($_GET["id"]);
             if (!empty($result)) {
-
                 echo json_encode($result);
             }
         }
@@ -40,7 +39,7 @@ class OtherController extends BaseController
         header('Content-Type: application/json');
         header("Access-Control-Allow-Origin: *");
         if (isset($_GET["id"], $_GET["userId"])) {
-            $this->model->setSold($_GET);
+            $this->model->setSold($_GET,"");
         }
     }
     public function favorisJSON()
@@ -86,20 +85,28 @@ class OtherController extends BaseController
 
         $json = file_get_contents('php://input');
         $data = json_decode($json);
-        if (isset($data->userId, $data->id)) {
+        if (isset($data->userId)) {
             $resultat = $this->model->totalPrice($data);
             if ($resultat) {
+                foreach ($data->content as $element) {
+                    $this->model->setSold($element,$data->userId);
+                }
                 $result = $this->model->payAll($data);
                 if ($result) {
-                    echo json_encode("success");
+                    $solde = $this->model->getSolde($data);
+                    if (!empty($solde)) {
+                        echo json_encode($solde);
+                    } else {
+                        echo json_encode("failed to fetch");
+                    }
                 } else {
                     echo json_encode("error");
                 }
             } else {
-                echo json_encode("error");
+                echo json_encode("error -> prob prix");
             }
         } else {
-            echo json_encode("error");
+            echo json_encode("error : prob userId");
         }
     }
 }
